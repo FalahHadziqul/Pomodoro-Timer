@@ -16,12 +16,25 @@ h1 {
     font-size: 150px;
     font-family: "Pacifico", cursive;
     margin-top: -40px;
-    margin-bottom: 50px;
+    margin-bottom: -10px;
     text-shadow:
     -3px -3px 0 black,
      3px -3px 0 black,
     -3px  3px 0 black,
      3px  3px 0 black;
+}
+
+#animation{
+    font-family: "Source Code Pro", monospace;
+    font-size: 100px;
+    margin-top: -60px;
+    margin-bottom: -20px;
+}
+#phase{
+    margin-top: 40px;
+    font-size: 27px;
+    font-family: "Comfortaa", sans-serif;
+    font-style: bold;
 }
 
 .button-group{

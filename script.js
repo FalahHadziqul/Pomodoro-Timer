@@ -1,43 +1,104 @@
-let timeLeft = 50 * 60;
-let isRunning = false;
+let timeRest = 5;
+let timeStudy = 10;
+let timeLeft = timeStudy;
+let isRunningStudy = false;
+let isRunningRest = false;
+let studyInterval = true;
+let restInterval = false;
 let timerInterval;
 
 const timerDisplay = document.getElementById("timer");
 const startStopBtn = document.getElementById("start");
 const resetBtn = document.getElementById("reset");
+const animationText = document.getElementById("animation");
+const phaseText = document.getElementById("phase");
 
 function startTimer(){
-    isRunning = true;
-    startStopBtn.textContent = "Stop";
-
-    timerInterval = setInterval(() => {
-        timeLeft--;
+    if(studyInterval){
+        isRunningStudy = true;
+        startStopBtn.textContent = "Stop";
+        phaseText.textContent = "Studying..";
+        animationText.textContent += "..";
+        
         updateDisplay();
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            if(timeLeft < 0){
+                isRunningStudy = false;
+                studyInterval = false;
+                restInterval = true;
+                timeLeft = timeRest;
+                clearInterval(timerInterval);
+                startTimer();
+            }
+            else{
+                updateDisplay();
+                if(animationText.textContent.includes(".....")){
+                    animationText.textContent = animationText.textContent.replace(".....", "..");
+                }
+                else{
+                    animationText.textContent += ".";
+                }
+            }
+        }, 1000);
+    }
+    else if(restInterval){
+        isRunningRest = true;
+        startStopBtn.textContent = "Stop";
+        phaseText.textContent = "Resting..";
+        animationText.textContent = "";
 
-        if(timeLeft <= 0){
-            resetTimer();
-        }
-
-    }, 1000);
+        updateDisplay();
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            if(timeLeft < 0){
+                restInterval = false;
+                isRunningRest = false;
+                studyInterval = true;
+                timeLeft = timeStudy; 
+                clearInterval(timerInterval);
+                startTimer();
+            }
+            else{
+                updateDisplay();
+            }
+            
+        }, 1000);
+    }
 }   
 
+
 function stopTimer(){
-    isRunning = false;
-    startStopBtn.textContent = "Start";
+    if(isRunningStudy){
+        isRunningStudy = false;
+    }
+    else if (isRunningRest){
+        isRunningRest = false;
+    }
+    startStopBtn.textContent = "Resume";
+    animationText.textContent = "";
+    phaseText.textContent = "";
     clearInterval(timerInterval);
 }
 
 function resetTimer(){
-    isRunning = false;
+    if(studyInterval){
+        isRunningStudy = false;
+        timeLeft = timeStudy;
+    }
+    else if(restInterval){
+        isRunningRest = false;
+        timeLeft = timeRest;
+    }
     clearInterval(timerInterval);
-    timeLeft = 50 * 60;
     startStopBtn.textContent = "Start";
-    updateDisplay();
+    animationText.textContent = "";
+    phaseText.textContent = "";
+    updateDisplay();   
 }
 
 function updateDisplay(){
     timerDisplay.textContent = formatTime(timeLeft);
-    
 }
 
 function formatTime(time){
@@ -51,7 +112,7 @@ function formatTime(time){
 }   
 
 startStopBtn.addEventListener('click', ()=>{
-    if(isRunning){
+    if(isRunningStudy){
         stopTimer();
     }
     else{
